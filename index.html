@@ -1,57 +1,435 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Pablo Ramirez | Portfolio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pablo Ramírez — Software Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080b10;
+      --bg2: #0d1117;
+      --border: #1e2d3d;
+      --accent: #00d9ff;
+      --accent2: #7b61ff;
+      --green: #3ddc84;
+      --text: #e6edf3;
+      --muted: #7d8590;
+      --card: #0d1520;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; overflow-x: hidden; cursor: none; }
+
+    .cursor { position: fixed; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: screen; }
+    .cursor-trail { position: fixed; width: 32px; height: 32px; border: 1px solid rgba(0,217,255,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transition: all 0.12s ease; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(0,217,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,217,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
+    }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 5rem;
+      background: rgba(8,11,16,0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--accent); }
+    .nav-logo span { color: var(--text); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-badge { background: var(--green); color: #000; font-size: 0.6rem; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 700; margin-left: 0.4rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    #hero { min-height: 100vh; display: flex; align-items: center; padding: 0 5rem; position: relative; z-index: 1; }
+    .hero-inner { max-width: 860px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(0,217,255,0.3); padding: 0.4rem 1rem; margin-bottom: 2.5rem; border-radius: 2px; animation: fadeUp 0.6s ease both; }
+    .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+
+    h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.8rem, 7vw, 6.5rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.03em; animation: fadeUp 0.6s 0.1s ease both; }
+    h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub { font-family: 'Syne', sans-serif; font-size: clamp(0.95rem, 2vw, 1.5rem); font-weight: 600; color: var(--muted); margin-top: 0.6rem; animation: fadeUp 0.6s 0.15s ease both; display: block; }
+    .hero-desc { margin-top: 2rem; max-width: 530px; color: var(--muted); font-size: 0.87rem; line-height: 1.95; animation: fadeUp 0.6s 0.2s ease both; }
+    .hero-meta { display: flex; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; animation: fadeUp 0.6s 0.25s ease both; }
+    .meta-item { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+    .hero-cta { display: flex; gap: 1rem; margin-top: 2.5rem; animation: fadeUp 0.6s 0.3s ease both; flex-wrap: wrap; }
+
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.9rem 2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; text-decoration: none; border-radius: 3px; transition: all 0.2s; cursor: none; }
+    .btn-primary { background: var(--accent); color: #000; font-weight: 600; }
+    .btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 0 30px rgba(0,217,255,0.4); }
+    .btn-outline { border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    .orb { position: absolute; border-radius: 50%; filter: blur(130px); pointer-events: none; }
+    .orb1 { width: 600px; height: 600px; background: rgba(0,217,255,0.05); top: -150px; right: -150px; }
+    .orb2 { width: 400px; height: 400px; background: rgba(123,97,255,0.06); bottom: 0; left: 40%; }
+
+    section { position: relative; z-index: 1; padding: 7rem 5rem; }
+    .section-label { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 3rem; }
+
+    /* SKILLS */
+    #skills { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .skills-categories { display: flex; flex-direction: column; gap: 2.5rem; }
+    .skill-category-title { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.9rem; }
+    .skills-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .skill-pill { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--card); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.78rem; color: var(--text); transition: all 0.2s; }
+    .skill-pill:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,217,255,0.1); }
+
+    /* EXPERIENCE */
+    .timeline { display: flex; flex-direction: column; position: relative; }
+    .timeline::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(180deg, var(--accent), var(--accent2), transparent); }
+    .exp-item { padding: 0 0 3.5rem 2.5rem; position: relative; }
+    .exp-item::before { content: ''; position: absolute; left: -4px; top: 8px; width: 9px; height: 9px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px rgba(0,217,255,0.5); }
+    .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .exp-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .exp-company { color: var(--accent); font-size: 0.82rem; margin-bottom: 0.3rem; }
+    .exp-date { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; border: 1px solid var(--border); padding: 0.25rem 0.7rem; border-radius: 2px; white-space: nowrap; }
+    .exp-location { font-size: 0.7rem; color: var(--muted); margin-bottom: 1rem; }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .exp-bullets li { font-size: 0.81rem; color: var(--muted); line-height: 1.75; padding-left: 1.2rem; position: relative; }
+    .exp-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 0.75rem; }
+    .exp-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+    .exp-tag { font-size: 0.65rem; padding: 0.2rem 0.6rem; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); }
+
+    /* PROJECTS */
+    #projects { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.2rem; }
+    .project-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; transition: all 0.25s; position: relative; overflow: hidden; }
+    .project-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+    .project-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .project-card:hover::after { transform: scaleX(1); }
+    .project-num { font-size: 0.65rem; color: var(--accent); letter-spacing: 0.2em; margin-bottom: 1rem; }
+    .project-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .project-desc { color: var(--muted); font-size: 0.8rem; line-height: 1.85; margin-bottom: 1.5rem; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag { font-size: 0.65rem; padding: 0.2rem 0.6rem; border: 1px solid var(--border); border-radius: 2px; color: var(--muted); }
+
+    /* ACHIEVEMENTS */
+    #achievements { border-top: 1px solid var(--border); }
+    .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.2rem; }
+    .achievement-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.8rem; transition: all 0.25s; }
+    .achievement-card:hover { border-color: var(--accent2); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(123,97,255,0.1); }
+    .ach-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .ach-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .ach-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.8; }
+
+    /* EDUCATION */
+    #education { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .edu-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; max-width: 480px; display: flex; gap: 1.5rem; align-items: flex-start; }
+    .edu-icon { font-size: 2rem; }
+    .edu-degree { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .edu-school { color: var(--accent); font-size: 0.82rem; margin-bottom: 0.3rem; }
+    .edu-meta { font-size: 0.72rem; color: var(--muted); }
+
+    /* CONTACT */
+    #contact { text-align: center; }
+    .contact-inner { max-width: 600px; margin: 0 auto; }
+    .contact-email { font-family: 'Syne', sans-serif; font-size: clamp(1rem, 2.5vw, 1.7rem); font-weight: 700; color: var(--accent); text-decoration: none; display: inline-block; margin: 1.5rem 0; position: relative; }
+    .contact-email::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px; background: var(--accent); transform: scaleX(0); transition: transform 0.3s; }
+    .contact-email:hover::after { transform: scaleX(1); }
+    .contact-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+
+    footer { border-top: 1px solid var(--border); padding: 2rem 5rem; display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 0.7rem; letter-spacing: 0.08em; position: relative; z-index: 1; }
+    .social-links { display: flex; gap: 1.5rem; }
+    .social-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .social-links a:hover { color: var(--accent); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(35px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; } .d3 { transition-delay: 0.3s; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section, #hero { padding: 5rem 1.5rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
 </head>
 <body>
 
-  <h1>Pablo Alejandro Ramírez Urcino</h1>
-  <p>Software Engineer | Web & Mobile Developer</p>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
 
-  <h2>About Me</h2>
-  <p>
-    Software Engineer with 6+ years of experience in web and mobile development.
-    I specialize in building scalable applications focused on business processes,
-    including payments, financing, and inventory systems.
-  </p>
-
-  <h2>Tech Stack</h2>
-  <ul>
-    <li>React, Vue, JavaScript</li>
-    <li>React Native, Flutter</li>
-    <li>PHP (Laravel), .NET APIs</li>
-    <li>MySQL, SQL Server</li>
+<nav>
+  <div class="nav-logo">Pablo<span>.dev</span></div>
+  <ul class="nav-links">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experiencia</a></li>
+    <li><a href="#projects">Proyectos</a></li>
+    <li><a href="#contact">Contacto</a></li>
+    <li><a href="mailto:pablo.ramirez283@gmail.com">Hire me<span class="nav-badge">open</span></a></li>
   </ul>
+</nav>
 
-  <h2>Projects</h2>
+<section id="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="hero-inner">
+    <div class="hero-tag"><span class="dot"></span>Disponible para proyectos</div>
+    <h1>Pablo<br>Alejandro<br>Ramírez<em>.</em></h1>
+    <span class="hero-sub">Software Engineer · FullStack · Web &amp; Mobile</span>
+    <p class="hero-desc">
+      6 años construyendo soluciones digitales completas. Especializado en
+      aplicaciones web y móviles con React, Flutter, Laravel y .NET.
+      Apasionado por código limpio, APIs robustas y experiencias que realmente funcionan.
+    </p>
+    <div class="hero-meta">
+      <div class="meta-item">📍 Guadalajara, Jalisco, México</div>
+      <div class="meta-item">🎓 Ing. en Software — U. de Colima</div>
+      <div class="meta-item">⚡ 6+ años de experiencia</div>
+    </div>
+    <div class="hero-cta">
+      <a href="#experience" class="btn btn-primary">Ver experiencia →</a>
+      <a href="mailto:pablo.ramirez283@gmail.com" class="btn btn-outline">pablo.ramirez283@gmail.com</a>
+    </div>
+  </div>
+</section>
 
-  <h3>Financing & Payments App</h3>
-  <p>
-    Mobile app that allows users to check financing details, account statements,
-    and make payments using Stripe, Conekta, and Clip. Includes AI-powered support chat.
-  </p>
+<section id="skills">
+  <div class="section-label">// 01 — Stack técnico</div>
+  <h2 class="section-title">Tecnologías</h2>
+  <div class="skills-categories">
+    <div class="reveal">
+      <div class="skill-category-title">Frontend &amp; Mobile</div>
+      <div class="skills-row">
+        <span class="skill-pill">⚛️ React.js</span>
+        <span class="skill-pill">📱 React Native</span>
+        <span class="skill-pill">🎯 Flutter</span>
+        <span class="skill-pill">🖼️ Vue.js</span>
+        <span class="skill-pill">🅰️ Angular</span>
+        <span class="skill-pill">🌐 HTML / CSS</span>
+        <span class="skill-pill">🟨 JavaScript</span>
+      </div>
+    </div>
+    <div class="reveal d1">
+      <div class="skill-category-title">Backend &amp; APIs</div>
+      <div class="skills-row">
+        <span class="skill-pill">🐘 PHP / Laravel</span>
+        <span class="skill-pill">🔷 .NET Minimal API</span>
+        <span class="skill-pill">🔗 Entity Framework Core</span>
+        <span class="skill-pill">🔌 REST APIs</span>
+        <span class="skill-pill">🤖 Gemini AI</span>
+      </div>
+    </div>
+    <div class="reveal d2">
+      <div class="skill-category-title">Base de datos &amp; DevOps</div>
+      <div class="skills-row">
+        <span class="skill-pill">🗄️ MySQL</span>
+        <span class="skill-pill">📊 SQL Server</span>
+        <span class="skill-pill">🐳 Docker</span>
+        <span class="skill-pill">🔀 Git</span>
+        <span class="skill-pill">💳 Stripe</span>
+        <span class="skill-pill">💳 Conekta</span>
+        <span class="skill-pill">💳 Clip</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <h3>Inventory & Work Tracking App (Offline)</h3>
-  <p>
-    Mobile app designed for offline use, allowing workers to capture data and sync
-    automatically when internet is available.
-  </p>
+<section id="experience">
+  <div class="section-label">// 02 — Trayectoria</div>
+  <h2 class="section-title">Experiencia</h2>
+  <div class="timeline">
 
-  <h3>Multi-company Management System</h3>
-  <p>
-    Web system built with PHP and JavaScript for managing sales, payments,
-    inventory, and customer data across multiple companies.
-  </p>
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div>
+          <div class="exp-title">Full Stack Developer</div>
+          <div class="exp-company">Wimocomunica</div>
+          <div class="exp-location">📍 Guadalajara, México</div>
+        </div>
+        <div class="exp-date">02/2023 — 02/2026</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>App móvil para pagos de financiamiento: consulta de estados de cuenta y pagos sin visitar sucursal.</li>
+        <li>Chat de soporte automatizado con Gemini AI para resolver preguntas frecuentes de clientes.</li>
+        <li>Sistema de ventas y pagos multi-empresa con PHP y JavaScript.</li>
+        <li>APIs con .NET Minimal API y Entity Framework Core para sincronización centralizada entre compañías.</li>
+        <li>Integración de pasarelas de pago Stripe, Conekta y Clip en web y móvil.</li>
+        <li>Migración de apps React Native a Flutter. Auth y autorización con herramientas nativas de .NET.</li>
+      </ul>
+      <div class="exp-tags">
+        <span class="exp-tag">Flutter</span><span class="exp-tag">.NET API</span><span class="exp-tag">PHP</span>
+        <span class="exp-tag">JavaScript</span><span class="exp-tag">Stripe</span><span class="exp-tag">Conekta</span>
+        <span class="exp-tag">Gemini AI</span><span class="exp-tag">Entity Framework</span>
+      </div>
+    </div>
 
-  <h2>Contact</h2>
-  <p>Email: pablo.ramirez283@gmail.com</p>
-  <p>LinkedIn: 
-    <a href="https://www.linkedin.com/in/pablo-alejandro-ramirez-urcino-002457151">
-      View Profile
-    </a>
-  </p>
-  <p>GitHub: https://github.com/ramirez283</p>
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div>
+          <div class="exp-title">Full Stack Developer</div>
+          <div class="exp-company">STX</div>
+          <div class="exp-location">📍 Guadalajara, México</div>
+        </div>
+        <div class="exp-date">06/2018 — 12/2020</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Módulos para sistema de administración de empresa agroindustrial: producción, nómina, inventario y entregas.</li>
+        <li>Backend Laravel con frontends Vue.js y React.js en múltiples proyectos web.</li>
+        <li>Mantenimiento de app React Native para captura de datos en campo.</li>
+        <li>Optimización de código, bugs y desarrollo de nuevas funcionalidades.</li>
+      </ul>
+      <div class="exp-tags">
+        <span class="exp-tag">Laravel</span><span class="exp-tag">Vue.js</span>
+        <span class="exp-tag">React.js</span><span class="exp-tag">React Native</span><span class="exp-tag">MySQL</span>
+      </div>
+    </div>
 
+    <div class="exp-item reveal">
+      <div class="exp-header">
+        <div>
+          <div class="exp-title">Full Stack Developer</div>
+          <div class="exp-company">Control Cargo Internacional</div>
+          <div class="exp-location">📍 Manzanillo, México</div>
+        </div>
+        <div class="exp-date">01/2015 — 05/2018</div>
+      </div>
+      <ul class="exp-bullets">
+        <li>Sistema PHP + JavaScript para logs y control de procesos de bienes en puerto marítimo.</li>
+        <li>Módulos de rastreo y reporte de daños a contenedores durante transporte.</li>
+        <li>Reportes de productividad y actividad de trabajadores para decisiones operacionales.</li>
+      </ul>
+      <div class="exp-tags">
+        <span class="exp-tag">PHP</span><span class="exp-tag">JavaScript</span><span class="exp-tag">SQL Server</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="projects">
+  <div class="section-label">// 03 — Proyectos</div>
+  <h2 class="section-title">Trabajo destacado</h2>
+  <div class="projects-grid">
+    <div class="project-card reveal">
+      <div class="project-num">001</div>
+      <h3 class="project-title">App Financiamiento y Pagos</h3>
+      <p class="project-desc">App móvil para clientes con consulta de estados de cuenta, múltiples métodos de pago y chat de soporte con IA. Elimina la necesidad de visitar sucursal.</p>
+      <div class="project-tags">
+        <span class="tag">Flutter</span><span class="tag">.NET API</span><span class="tag">Stripe</span><span class="tag">Conekta</span><span class="tag">Gemini AI</span>
+      </div>
+    </div>
+    <div class="project-card reveal d1">
+      <div class="project-num">002</div>
+      <h3 class="project-title">App Trabajo e Inventario (Offline)</h3>
+      <p class="project-desc">App móvil para rastreo de trabajo a destajo e inventario en modo offline. Captura datos sin conexión y sincroniza automáticamente al restaurar conectividad.</p>
+      <div class="project-tags">
+        <span class="tag">Flutter</span><span class="tag">SQLite</span><span class="tag">Sync API</span><span class="tag">Offline-first</span>
+      </div>
+    </div>
+    <div class="project-card reveal d2">
+      <div class="project-num">003</div>
+      <h3 class="project-title">Sistema de Ventas Multi-empresa</h3>
+      <p class="project-desc">Plataforma de gestión de ventas y pagos para múltiples compañías. APIs .NET para sincronización centralizada de clientes, ventas y financiamientos.</p>
+      <div class="project-tags">
+        <span class="tag">PHP</span><span class="tag">.NET</span><span class="tag">JavaScript</span><span class="tag">MySQL</span><span class="tag">Entity Framework</span>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-num">004</div>
+      <h3 class="project-title">Control Portuario</h3>
+      <p class="project-desc">Sistema de registro de logs y control de procesos para bienes en puerto marítimo. Rastreo de daños, reportes de productividad y control operacional.</p>
+      <div class="project-tags">
+        <span class="tag">PHP</span><span class="tag">JavaScript</span><span class="tag">SQL Server</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="achievements">
+  <div class="section-label">// 04 — Impacto</div>
+  <h2 class="section-title">Logros clave</h2>
+  <div class="achievements-grid">
+    <div class="achievement-card reveal">
+      <div class="ach-icon">🤖</div>
+      <div class="ach-title">IA en producción</div>
+      <div class="ach-desc">Chat de soporte con Gemini AI integrado en app de clientes, reduciendo carga al equipo de soporte con respuestas automatizadas.</div>
+    </div>
+    <div class="achievement-card reveal d1">
+      <div class="ach-icon">🔄</div>
+      <div class="ach-title">Sync offline/online</div>
+      <div class="ach-desc">Solución de captura offline con sincronización automática al recuperar conexión, garantizando continuidad operacional.</div>
+    </div>
+    <div class="achievement-card reveal d2">
+      <div class="ach-icon">🏢</div>
+      <div class="ach-title">Integración multi-empresa</div>
+      <div class="ach-desc">APIs .NET que centralizan datos de clientes y ventas entre múltiples compañías, eliminando silos de información.</div>
+    </div>
+    <div class="achievement-card reveal d3">
+      <div class="ach-icon">💳</div>
+      <div class="ach-title">3 pasarelas de pago</div>
+      <div class="ach-desc">Integración exitosa de Stripe, Conekta y Clip en web y móvil, habilitando múltiples métodos de pago para usuarios finales.</div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="section-label">// 05 — Formación</div>
+  <h2 class="section-title">Educación</h2>
+  <div class="edu-card reveal">
+    <div class="edu-icon">🎓</div>
+    <div>
+      <div class="edu-degree">Ingeniería en Software</div>
+      <div class="edu-school">Universidad de Colima</div>
+      <div class="edu-meta">📍 Colima, México &nbsp;·&nbsp; 2014 — 2018</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-label">// 06 — Contacto</div>
+  <div class="contact-inner">
+    <h2 class="section-title">¿Trabajamos juntos?</h2>
+    <p style="color:var(--muted);font-size:0.85rem;line-height:1.9;">Disponible para proyectos freelance, consultoría y oportunidades laborales.<br>Especializado en soluciones FullStack web y móvil.</p>
+    <a href="mailto:pablo.ramirez283@gmail.com" class="contact-email">pablo.ramirez283@gmail.com</a>
+    <div class="contact-links">
+      <a href="https://github.com/ramirez283" class="btn btn-outline" target="_blank">GitHub →</a>
+      <a href="https://www.linkedin.com/in/pablo-alejandro-ramirez-urcino-002457151" class="btn btn-outline" target="_blank">LinkedIn →</a>
+      <a href="tel:+523141653839" class="btn btn-primary">+52 314 165 3839</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Pablo Alejandro Ramírez Urcino — Software Engineer</span>
+  <div class="social-links">
+    <a href="https://github.com/ramirez283" target="_blank">GitHub</a>
+    <a href="https://www.linkedin.com/in/pablo-alejandro-ramirez-urcino-002457151" target="_blank">LinkedIn</a>
+    <a href="mailto:pablo.ramirez283@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursorTrail');
+  let tx = 0, ty = 0;
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = (e.clientX - 5) + 'px';
+    cursor.style.top = (e.clientY - 5) + 'px';
+    tx = e.clientX; ty = e.clientY;
+  });
+  setInterval(() => {
+    trail.style.left = (tx - 16) + 'px';
+    trail.style.top = (ty - 16) + 'px';
+  }, 80);
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
